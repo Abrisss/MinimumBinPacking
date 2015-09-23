@@ -4,7 +4,6 @@ import depository.Bin;
 import depository.Depository;
 import depository.Thing;
 
-import javax.management.Query;
 import java.util.List;
 
 /**
@@ -13,10 +12,12 @@ import java.util.List;
 public class LastBinAlgorithm {
     private Depository depo;
 
-    public Depository runAlgorithm(Depository depo) {
+    public void run(Depository depo) {
         this.depo = depo;
-        addThingToBin(depo.getNextThing(), depo.getOpenBins());
-        return this.depo;
+        while(depo.isAbleToAddThingToBin()){
+            addThingToBin(depo.getNextThing(), depo.getOpenBins());
+        }
+
     }
 
     private boolean addThingToBin(Thing nextThing, List<Bin> openBins) {

@@ -25,7 +25,7 @@ public class ThingsReader {
         parser = new JSONParser();
     }
 
-    public List<Thing> parse(String fileName) {
+    public List<Thing> parseThings(String fileName) {
         List<Thing> returnThings = null;
         try {
             File file = loadFile(fileName);
@@ -46,6 +46,25 @@ public class ThingsReader {
             e.printStackTrace();
         }
         return returnThings;
+    }
+
+    public Integer parseBinsNumber(String fileName) {
+        int binsNumber = 0;
+        try {
+            File file = loadFile(fileName);
+            Object obj = parser.parse(new FileReader(file));
+            JSONObject jsonObject = (JSONObject) obj;
+
+            Long temp = (Long) jsonObject.get("binsNumber");
+            binsNumber = temp.intValue();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return binsNumber;
     }
 
     private File loadFile(String fileName) {

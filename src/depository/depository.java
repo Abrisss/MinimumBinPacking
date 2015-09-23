@@ -1,5 +1,8 @@
 package depository;
 
+import algorithm.FirstBinAlgorithm;
+import algorithm.LastBinAlgorithm;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,10 +11,17 @@ import java.util.List;
  */
 public class Depository {
 
-    private final List<Bin> bins;
-    private final List<Thing> things;
+    private  List<Bin> bins;
+    private  List<Thing> things;
+    private final LastBinAlgorithm lastBinAlgorithm;
+    private final FirstBinAlgorithm firstBinAlgorithm;
 
-    public Depository(final List<Thing> things, final int binsNumber) {
+    public Depository() {
+        firstBinAlgorithm = new FirstBinAlgorithm();
+        lastBinAlgorithm = new LastBinAlgorithm();
+    }
+
+    public void init(final List<Thing> things, final int binsNumber) {
         this.things = things;
         bins = new ArrayList<>(binsNumber);
         for(int i = 0; i< binsNumber; i++){
@@ -19,9 +29,11 @@ public class Depository {
         }
     }
 
-    public List<Bin> getBins() {
-        return bins;
+    public void runLastBinAlgorithm(){
+        lastBinAlgorithm.run(this);
     }
+
+
 
     public List<Bin> getNotFullBins() {
         List<Bin> notFullBins = new ArrayList<>();
@@ -49,5 +61,23 @@ public class Depository {
 
     public void returnThing(int index, Thing nextThing) {
         things.add(index,nextThing);
+    }
+
+    public List<Bin> getBins() {
+        return bins;
+    }
+
+    public boolean isAbleToAddThingToBin() {
+        boolean binCondition = false;
+        boolean thingCondition = false;
+        for (Bin bin : bins) {
+            if (bin.isOpen() && !bin.isFull()) {
+                binCondition = true;
+            }
+        }
+        if(!things.isEmpty()){
+            thingCondition = true;
+        }
+        return (binCondition && thingCondition);
     }
 }
