@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 public class InputPanel extends JPanel implements ActionListener {
 
     private Depository depo;
+    private Board board;
     private ThingsReader thingsReader;
     private String fileName;
 
@@ -25,9 +26,10 @@ public class InputPanel extends JPanel implements ActionListener {
     private JButton resumeBtn;
     private JButton instantlyBtn;
 
-    public InputPanel(Depository depo, ThingsReader thingsReader) {
+    public InputPanel(Depository depo, ThingsReader thingsReader, Board board) {
         this.depo = depo;
         this.thingsReader = thingsReader;
+        this.board = board;
         setBorder(BorderFactory.createEtchedBorder());
         addButtons();
         addInputField();
@@ -140,13 +142,12 @@ public class InputPanel extends JPanel implements ActionListener {
 
     private void init() {
         depo.init(thingsReader.parseThings(fileName), thingsReader.parseBinsNumber(fileName));
-
+        board.init(depo);
     }
 
     private void lastBinAlgorithm() {
-
-        depo.runLastBinAlgorithm();
-
+        board.runLastBinAlgorithm();
+//        depo.runLastBinAlgorithm();
     }
 
 //    private void startAlgorithm(String type) {

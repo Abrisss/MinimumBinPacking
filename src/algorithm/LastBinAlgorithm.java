@@ -3,6 +3,7 @@ package algorithm;
 import depository.Bin;
 import depository.Depository;
 import depository.Thing;
+import sun.awt.geom.Crossings;
 
 import java.util.List;
 
@@ -10,17 +11,22 @@ import java.util.List;
  * Created by Abraham on 2015. 09. 23..
  */
 public class LastBinAlgorithm {
-    private Depository depo;
 
     public void run(Depository depo) {
-        this.depo = depo;
         while(depo.isAbleToAddThingToBin()){
-            addThingToBin(depo.getNextThing(), depo.getOpenBins());
+            addThingToBin(depo.getNextThing(), depo.getOpenBins(), depo);
         }
 
     }
 
-    private boolean addThingToBin(Thing nextThing, List<Bin> openBins) {
+    public boolean oneStep(Depository depo) {
+        if(depo.isAbleToAddThingToBin()){
+            return addThingToBin(depo.getNextThing(), depo.getOpenBins(), depo);
+        }
+        return false;
+    }
+
+    private boolean addThingToBin(Thing nextThing, List<Bin> openBins, Depository depo) {
         for (Bin bin : openBins) {
             if (bin.addThingIfPossible(nextThing)) {
                 return true;
@@ -32,4 +38,6 @@ public class LastBinAlgorithm {
         depo.returnThing(0, nextThing);
         return false;
     }
+
+
 }

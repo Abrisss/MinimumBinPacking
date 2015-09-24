@@ -15,10 +15,12 @@ public class Depository {
     private  List<Thing> things;
     private final LastBinAlgorithm lastBinAlgorithm;
     private final FirstBinAlgorithm firstBinAlgorithm;
+    private boolean isInit;
 
     public Depository() {
         firstBinAlgorithm = new FirstBinAlgorithm();
         lastBinAlgorithm = new LastBinAlgorithm();
+        isInit = false;
     }
 
     public void init(final List<Thing> things, final int binsNumber) {
@@ -27,10 +29,15 @@ public class Depository {
         for(int i = 0; i< binsNumber; i++){
             bins.add(i, new Bin());
         }
+        isInit = true;
     }
 
     public void runLastBinAlgorithm(){
-        lastBinAlgorithm.run(this);
+
+    }
+
+    public boolean runLastBinAlgorithmOneStep() {
+        return lastBinAlgorithm.oneStep(this);
     }
 
 
@@ -59,6 +66,10 @@ public class Depository {
         return things.remove(0);
     }
 
+    public List<Thing> getThings() {
+        return things;
+    }
+
     public void returnThing(int index, Thing nextThing) {
         things.add(index,nextThing);
     }
@@ -67,6 +78,10 @@ public class Depository {
         return bins;
     }
 
+    /**
+     * If depo has at least one thing, and has at least one open and not full bin.
+     * @return
+     */
     public boolean isAbleToAddThingToBin() {
         boolean binCondition = false;
         boolean thingCondition = false;
@@ -79,5 +94,10 @@ public class Depository {
             thingCondition = true;
         }
         return (binCondition && thingCondition);
+    }
+
+
+    public boolean isInit() {
+        return isInit;
     }
 }

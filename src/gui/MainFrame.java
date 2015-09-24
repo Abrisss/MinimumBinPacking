@@ -1,15 +1,10 @@
 package gui;
 
-import algorithm.FirstBinAlgorithm;
-import algorithm.LastBinAlgorithm;
 import depository.Depository;
 import utility.ThingsReader;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
+import java.awt.*;
 
 public class MainFrame extends JFrame {
 
@@ -21,18 +16,19 @@ public class MainFrame extends JFrame {
     public MainFrame(Depository depo, ThingsReader thingsReader) {
         setTitle("Minimum Bin Packing");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1000, 650);
         setLocationRelativeTo(null);
 
         container = new JPanel();
         container.setLayout(new BorderLayout());
 
-        inputPanel = new InputPanel(depo, thingsReader);
+        board = new Board(depo);
+        inputPanel = new InputPanel(depo, thingsReader, board);
         container.add(inputPanel, BorderLayout.SOUTH);
 
-//        pane = new JScrollPane(board);
-//        pane.setPreferredSize(new Dimension(700, 0));
-//        container.add(pane, BorderLayout.CENTER);
+        pane = new JScrollPane(board);
+        pane.setPreferredSize(new Dimension(700, 0));
+        container.add(pane, BorderLayout.CENTER);
 
         add(container);
 
