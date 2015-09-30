@@ -69,6 +69,6 @@ public class ThingsReader {
 
     private File loadFile(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
-        return new File(classLoader.getResource("resources/" + fileName + ".json").getFile());
+        return new File(ThingsReader.class.getClassLoader().getResource("resources/" + fileName + ".json").getPath());
     }
 }
