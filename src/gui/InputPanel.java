@@ -24,7 +24,8 @@ public class InputPanel extends JPanel implements ActionListener {
     private JButton lastBinAlgoBtn;
     private JButton stopBtn;
     private JButton resumeBtn;
-    private JButton instantlyBtn;
+    private JButton instantlyFirstBinBtn;
+    private JButton instantlyLastBinBtn;
 
     public InputPanel(Depository depo, ThingsReader thingsReader, Board board) {
         this.depo = depo;
@@ -56,10 +57,15 @@ public class InputPanel extends JPanel implements ActionListener {
         resumeBtn.addActionListener(this);
         add(resumeBtn);
 
-        instantlyBtn = new JButton("Instantly draw");
-        instantlyBtn.setEnabled(false);
-        instantlyBtn.addActionListener(this);
-        add(instantlyBtn);
+        instantlyFirstBinBtn = new JButton("Instantly draw FirstBinAlgorithm");
+        instantlyFirstBinBtn.setEnabled(false);
+        instantlyFirstBinBtn.addActionListener(this);
+        add(instantlyFirstBinBtn);
+
+        instantlyLastBinBtn = new JButton("Instantly draw LastBinAlgorithm");
+        instantlyLastBinBtn.setEnabled(false);
+        instantlyLastBinBtn.addActionListener(this);
+        add(instantlyLastBinBtn);
 
     }
 
@@ -73,11 +79,13 @@ public class InputPanel extends JPanel implements ActionListener {
                     if (Pattern.matches("\\w+\\w*", fileName)) {
                         firstBinAlgoBtn.setEnabled(true);
                         lastBinAlgoBtn.setEnabled(true);
-                        instantlyBtn.setEnabled(true);
+                        instantlyFirstBinBtn.setEnabled(true);
+                        instantlyLastBinBtn.setEnabled(true);
                     } else {
                         firstBinAlgoBtn.setEnabled(false);
                         lastBinAlgoBtn.setEnabled(false);
-                        instantlyBtn.setEnabled(false);
+                        instantlyFirstBinBtn.setEnabled(false);
+                        instantlyLastBinBtn.setEnabled(false);
                     }
                 } catch (BadLocationException ex) {
                     Logger.getLogger(InputPanel.class.getName()).
@@ -111,15 +119,14 @@ public class InputPanel extends JPanel implements ActionListener {
         JButton button = (JButton) e.getSource();
         switch (button.getText()) {
             case "FirstBinAlgorithm":
-                init(false);
-                depo.sort();
-                firstBinAlgorithm();
+                initFirstBinAlgorithm(false);
+                board.runBinAlgorithm(true);
                 stopBtn.setEnabled(true);
                 resumeBtn.setEnabled(false);
                 break;
             case "LastBinAlgorithm":
-                init(false);
-                lastBinAlgorithm();
+                initLastBinAlgorithm(false);
+                board.runBinAlgorithm(false);
                 stopBtn.setEnabled(true);
                 resumeBtn.setEnabled(false);
                 break;
@@ -133,40 +140,29 @@ public class InputPanel extends JPanel implements ActionListener {
                 stopBtn.setEnabled(true);
                 board.timer.start();
                 break;
-            case "Instantly draw":
-                init(true);
-                lastBinAlgorithm();
+            case "Instantly draw FirstBinAlgorithm":
+                initFirstBinAlgorithm(true);
+                board.runBinAlgorithm(true);
+                resumeBtn.setEnabled(false);
+                stopBtn.setEnabled(false);
+                break;
+            case "Instantly draw LastBinAlgorithm":
+                initLastBinAlgorithm(true);
+                board.runBinAlgorithm(false);
                 resumeBtn.setEnabled(false);
                 stopBtn.setEnabled(false);
                 break;
         }
     }
 
-    private void init(boolean isInstantlyPaint) {
+    private void initLastBinAlgorithm(boolean isInstantlyPaint) {
         depo.init(thingsReader.parseThings(fileName), thingsReader.parseBinsNumber(fileName));
         board.init(depo, isInstantlyPaint);
     }
 
-    private void lastBinAlgorithm() {
-        board.runLastBinAlgorithm();
+    private void initFirstBinAlgorithm(boolean isInstantlyPaint) {
+        depo.init(thingsReader.parseThings(fileName), thingsReader.parseBinsNumber(fileName));
+        depo.sort();
+        board.init(depo, isInstantlyPaint);
     }
-
-    private void firstBinAlgorithm() {
-        board.runLastBinAlgorithm();
-    }
-
-//    private void startAlgorithm(String type) {
-//        if (type.equals("normal")) {
-//            sjtAlgorithm = new SJTAlgorithm(maxNumber);
-//            sjtAlgorithm.doAlgorithm();
-//            board.drawBoard(maxNumber, factorial(maxNumber));
-//        } else if (type.equals("instantly")) {
-//            if (sjtAlgorithm == null || sjtAlgorithm.getMaxNumber() != maxNumber) {
-//                sjtAlgorithm = new SJTAlgorithm(maxNumber);
-//                sjtAlgorithm.doAlgorithm();
-//            }
-//            board.drawInstantlyBoard(maxNumber, factorial(maxNumber));
-//        }
-//    }
-
 }

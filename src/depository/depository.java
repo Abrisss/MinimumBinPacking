@@ -35,10 +35,15 @@ public class Depository {
 
     public void sort(){
         Collections.sort(things);
+        Collections.reverse(things);
     }
 
     public boolean runLastBinAlgorithmOneStep() {
         return lastBinAlgorithm.oneStep(this);
+    }
+
+    public boolean runFirstBinAlgorithmOneStep() {
+        return firstBinAlgorithm.oneStep(this);
     }
 
 

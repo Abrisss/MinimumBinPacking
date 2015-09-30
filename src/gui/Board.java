@@ -24,6 +24,7 @@ public class Board extends JPanel implements ActionListener {
     int rowNumber;
     int columnNumber;
     boolean isInstantlyPaint;
+    boolean isFirstBinAlgorithm;
 
     public Board() {
         setBorder(BorderFactory.createEtchedBorder());
@@ -31,15 +32,17 @@ public class Board extends JPanel implements ActionListener {
         timer.setInitialDelay(pause);
         rowNumber = 7;
         isInstantlyPaint = false;
+        isFirstBinAlgorithm = true;
     }
 
     public void init(Depository depo, boolean isInstantlyPaint) {
         this.depo = depo;
         this.isInstantlyPaint = isInstantlyPaint;
-        columnNumber = (depo.getBins().size() / 2 + 1 > depo.getThings().size() / 8 + 1) ? depo.getBins().size() / 2 + 1 : depo.getThings().size() / 8 + 1;
+        columnNumber = (depo.getBins().size() / 2 + 1 > depo.getThings().size() / 4 + 1) ? depo.getBins().size() / 2 + 1 : depo.getThings().size() / 4 + 1;
     }
 
-    public void runLastBinAlgorithm() {
+    public void runBinAlgorithm(boolean isFirstBinAlgorithm) {
+        this.isFirstBinAlgorithm = isFirstBinAlgorithm;
         timer.start();
         drawBoard();
     }
@@ -129,14 +132,27 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (!isInstantlyPaint) {
+        if (isFirstBinAlgorithm && !isInstantlyPaint) {
+            if (depo.runFirstBinAlgorithmOneStep()) {
+                drawBoard();
+            } else {
+                timer.stop();
+            }
+            repaint();
+        } else if (isFirstBinAlgorithm && isInstantlyPaint) {
+            while (depo.runFirstBinAlgorithmOneStep()) {
+                drawBoard();
+            }
+            timer.stop();
+            repaint();
+        } else if (!isFirstBinAlgorithm && !isInstantlyPaint) {
             if (depo.runLastBinAlgorithmOneStep()) {
                 drawBoard();
             } else {
                 timer.stop();
             }
             repaint();
-        }else{
+        } else if (!isFirstBinAlgorithm && isInstantlyPaint) {
             while (depo.runLastBinAlgorithmOneStep()) {
                 drawBoard();
             }
