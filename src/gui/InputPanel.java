@@ -147,7 +147,6 @@ public class InputPanel extends JPanel implements ActionListener {
 
     private void lastBinAlgorithm() {
         board.runLastBinAlgorithm();
-//        depo.runLastBinAlgorithm();
     }
 
 //    private void startAlgorithm(String type) {

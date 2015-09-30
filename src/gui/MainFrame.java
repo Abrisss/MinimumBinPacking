@@ -22,12 +22,12 @@ public class MainFrame extends JFrame {
         container = new JPanel();
         container.setLayout(new BorderLayout());
 
-        board = new Board(depo);
+        board = new Board();
         inputPanel = new InputPanel(depo, thingsReader, board);
         container.add(inputPanel, BorderLayout.SOUTH);
 
         pane = new JScrollPane(board);
-        pane.setPreferredSize(new Dimension(700, 0));
+        pane.setPreferredSize(new Dimension(1000, 0));
         container.add(pane, BorderLayout.CENTER);
 
         add(container);

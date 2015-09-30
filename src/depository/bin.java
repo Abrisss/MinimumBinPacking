@@ -56,4 +56,8 @@ public class Bin {
     public void setClosed() {
         isOpen = false;
     }
+
+    public double getWeight() {
+        return weight;
+    }
 }

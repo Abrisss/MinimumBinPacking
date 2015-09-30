@@ -3,16 +3,10 @@ package gui;
 import depository.Bin;
 import depository.Depository;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.DeflaterOutputStream;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -21,40 +15,35 @@ import javax.swing.Timer;
 public class Board extends JPanel implements ActionListener {
 
     Timer timer;
-    final int blockSize = 40;
+    final int binSize = 100;
+    final int thingSize = 50;
     final int speed = 1000;
     final int pause = 1000;
     Depository depo;
-    //utolsó 2 sor a bin-eké, az elsõ 8 a thing-eké
+    //utolsÃ³ 2 sor a bin-ekÃ©, az elsÅ‘ 8 a thing-ekÃ©
     int rowNumber;
     int columnNumber;
-    int actArrayNumber;
 
-    public Board(Depository depo) {
+    public Board() {
         setBorder(BorderFactory.createEtchedBorder());
         timer = new Timer(speed, this);
         timer.setInitialDelay(pause);
-        rowNumber = 11;
-        this.depo = depo;
+        rowNumber = 10;
     }
 
-    public void init(Depository depo){
+    public void init(Depository depo) {
         this.depo = depo;
-        columnNumber = (depo.getBins().size()/2+1 > depo.getThings().size()/8+1) ? depo.getBins().size()/2+1 : depo.getThings().size()/8+1;
+        columnNumber = (depo.getBins().size() / 2 + 1 > depo.getThings().size() / 8 + 1) ? depo.getBins().size() / 2 + 1 : depo.getThings().size() / 8 + 1;
     }
 
     public void runLastBinAlgorithm() {
+        timer.start();
         drawBoard();
-        while(depo.runLastBinAlgorithmOneStep()){
-            drawBoard();
-        }
     }
 
     public void drawBoard() {
         setPreferredSize(new Dimension(
-                columnNumber * (blockSize + 10), (rowNumber) * (blockSize + 10)));
-        actArrayNumber = 0;
-        timer.start();
+                columnNumber * (binSize + 10), (rowNumber) * (binSize + 10)));
         revalidate();
         repaint();
     }
@@ -62,53 +51,63 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if(depo.isInit()) {
+        if (depo != null && depo.isInit()) {
             Graphics2D g2d = (Graphics2D) g.create();
             paintBins(g2d);
         }
+    }
+
+    private void paintThings(Graphics2D g2d){
+
+
     }
 
     private void paintBins(Graphics2D g2d) {
         List<Bin> bins = depo.getBins();
         for (int i = 0; i < bins.size(); i++) {
             Bin actBin = bins.get(i);
-            if (actBin.isFull()) {
-                g2d.setColor(Color.green);
-            } else if(!actBin.isOpen()){
-                g2d.setColor(Color.red);
-            } else{
-                g2d.setColor(Color.black);
-            }
+            setBinColor(g2d, actBin);
 
-            int actNumberColumn = i / rowNumber;
-            int actNumberRow = i % rowNumber;
-            g2d.drawRect(actNumberColumn * (blockSize + 10) + 10,
-                    actNumberRow * (blockSize + 10) + 40, blockSize, blockSize);
-            g2d.setFont(new Font("", Font.PLAIN, 26));
+            int actBinX = i % (columnNumber);
+            int actBinY = (i / columnNumber == 0) ? rowNumber - 2 : rowNumber - 1;
+
+            paintBin(g2d, actBinX, actBinY);
+            fillBin(g2d, actBin, actBinX, actBinY);
         }
+    }
+
+    private void setBinColor(Graphics2D g2d, Bin actBin) {
+        if (actBin.isFull()) {
+            g2d.setColor(Color.green);
+        } else if (!actBin.isOpen()) {
+            g2d.setColor(Color.red);
+        } else {
+            g2d.setColor(Color.black);
+        }
+    }
+
+    private void paintBin(Graphics2D g2d, int actBinX, int actBinY) {
+        g2d.setStroke(new BasicStroke(4));
+        g2d.drawRect(actBinX * (binSize + 10) + 10,
+                actBinY * (binSize + 10) , binSize, binSize);
+    }
+
+    private void fillBin(Graphics2D g2d, Bin actBin, int actBinX, int actBinY) {
+        g2d.fillRect(actBinX * (binSize + 10) + 10,
+                actBinY * (binSize + 10) , binSize, binSize);
+
+        g2d.setColor(Color.darkGray);
+        g2d.fillRect(actBinX * (binSize + 10) + 10,
+                actBinY * (binSize + 10) , binSize, (int)(binSize * actBin.getWeight()));
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        actArrayNumber++;
-        repaint();
-        if (actArrayNumber >= rowNumber * columnNumber) {
-            actArrayNumber = rowNumber * columnNumber;
+        if (depo.runLastBinAlgorithmOneStep()) {
+            drawBoard();
+        } else {
             timer.stop();
         }
-    }
-
-
-    public void drawInstantlyBoard(int rowNumber, int columnNumber) {
-        setPreferredSize(new Dimension(
-                columnNumber * (blockSize + 10), (rowNumber + 1) * (blockSize + 10)));
-        this.rowNumber = rowNumber;
-        this.columnNumber = columnNumber;
-        actArrayNumber = rowNumber * columnNumber;
-        timer.start();
-        revalidate();
         repaint();
     }
-
-
 }
