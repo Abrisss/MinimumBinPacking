@@ -4,6 +4,7 @@ import algorithm.FirstBinAlgorithm;
 import algorithm.LastBinAlgorithm;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,8 +33,8 @@ public class Depository {
         isInit = true;
     }
 
-    public void runLastBinAlgorithm(){
-
+    public void sort(){
+        Collections.sort(things);
     }
 
     public boolean runLastBinAlgorithmOneStep() {

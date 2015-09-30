@@ -12,15 +12,8 @@ import java.util.List;
  */
 public class LastBinAlgorithm {
 
-    public void run(Depository depo) {
-        while(depo.isAbleToAddThingToBin()){
-            addThingToBin(depo.getNextThing(), depo.getOpenBins(), depo);
-        }
-
-    }
-
     public boolean oneStep(Depository depo) {
-        if(depo.isAbleToAddThingToBin()){
+        if (depo.isAbleToAddThingToBin()) {
             return addThingToBin(depo.getNextThing(), depo.getOpenBins(), depo);
         }
         return false;
@@ -30,14 +23,12 @@ public class LastBinAlgorithm {
         for (Bin bin : openBins) {
             if (bin.addThingIfPossible(nextThing)) {
                 return true;
-            }
-            else{
+            } else {
                 bin.setClosed();
             }
         }
         depo.returnThing(0, nextThing);
         return false;
     }
-
 
 }

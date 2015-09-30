@@ -112,7 +112,8 @@ public class InputPanel extends JPanel implements ActionListener {
         switch (button.getText()) {
             case "FirstBinAlgorithm":
                 init(false);
-//                firstBinAlgorithm();
+                depo.sort();
+                firstBinAlgorithm();
                 stopBtn.setEnabled(true);
                 resumeBtn.setEnabled(false);
                 break;
@@ -147,6 +148,10 @@ public class InputPanel extends JPanel implements ActionListener {
     }
 
     private void lastBinAlgorithm() {
+        board.runLastBinAlgorithm();
+    }
+
+    private void firstBinAlgorithm() {
         board.runLastBinAlgorithm();
     }
 
