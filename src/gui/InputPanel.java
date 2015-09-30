@@ -111,13 +111,13 @@ public class InputPanel extends JPanel implements ActionListener {
         JButton button = (JButton) e.getSource();
         switch (button.getText()) {
             case "FirstBinAlgorithm":
-                init();
+                init(false);
 //                firstBinAlgorithm();
                 stopBtn.setEnabled(true);
                 resumeBtn.setEnabled(false);
                 break;
             case "LastBinAlgorithm":
-                init();
+                init(false);
                 lastBinAlgorithm();
                 stopBtn.setEnabled(true);
                 resumeBtn.setEnabled(false);
@@ -125,24 +125,25 @@ public class InputPanel extends JPanel implements ActionListener {
             case "Stop":
                 resumeBtn.setEnabled(true);
                 stopBtn.setEnabled(false);
-//                board.timer.stop();
+                board.timer.stop();
                 break;
             case "Resume":
                 resumeBtn.setEnabled(false);
                 stopBtn.setEnabled(true);
-//                board.timer.start();
+                board.timer.start();
                 break;
             case "Instantly draw":
-//                startAlgorithm("instantly");
+                init(true);
+                lastBinAlgorithm();
                 resumeBtn.setEnabled(false);
                 stopBtn.setEnabled(false);
                 break;
         }
     }
 
-    private void init() {
+    private void init(boolean isInstantlyPaint) {
         depo.init(thingsReader.parseThings(fileName), thingsReader.parseBinsNumber(fileName));
-        board.init(depo);
+        board.init(depo, isInstantlyPaint);
     }
 
     private void lastBinAlgorithm() {

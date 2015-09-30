@@ -2,6 +2,7 @@ package gui;
 
 import depository.Bin;
 import depository.Depository;
+import depository.Thing;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,24 +16,26 @@ import javax.swing.Timer;
 public class Board extends JPanel implements ActionListener {
 
     Timer timer;
-    final int binSize = 100;
-    final int thingSize = 50;
+    final int size = 77;
     final int speed = 1000;
     final int pause = 1000;
     Depository depo;
     //utolsó 2 sor a bin-eké, az első 8 a thing-eké
     int rowNumber;
     int columnNumber;
+    boolean isInstantlyPaint;
 
     public Board() {
         setBorder(BorderFactory.createEtchedBorder());
         timer = new Timer(speed, this);
         timer.setInitialDelay(pause);
-        rowNumber = 10;
+        rowNumber = 7;
+        isInstantlyPaint = false;
     }
 
-    public void init(Depository depo) {
+    public void init(Depository depo, boolean isInstantlyPaint) {
         this.depo = depo;
+        this.isInstantlyPaint = isInstantlyPaint;
         columnNumber = (depo.getBins().size() / 2 + 1 > depo.getThings().size() / 8 + 1) ? depo.getBins().size() / 2 + 1 : depo.getThings().size() / 8 + 1;
     }
 
@@ -43,7 +46,7 @@ public class Board extends JPanel implements ActionListener {
 
     public void drawBoard() {
         setPreferredSize(new Dimension(
-                columnNumber * (binSize + 10), (rowNumber) * (binSize + 10)));
+                columnNumber * (size + 10), (rowNumber) * (size + 10)));
         revalidate();
         repaint();
     }
@@ -54,12 +57,35 @@ public class Board extends JPanel implements ActionListener {
         if (depo != null && depo.isInit()) {
             Graphics2D g2d = (Graphics2D) g.create();
             paintBins(g2d);
+            paintThings(g2d);
         }
     }
 
-    private void paintThings(Graphics2D g2d){
+    private void paintThings(Graphics2D g2d) {
+        List<Thing> things = depo.getThings();
+        for (int i = 0; i < things.size(); i++) {
+            Thing actThing = things.get(i);
 
+            setThingColor(g2d, i);
 
+            int actBinX = i % columnNumber;
+            int actBinY = i / columnNumber + 1;
+
+            fillThing(g2d, actThing, actBinX, actBinY);
+        }
+    }
+
+    private void setThingColor(Graphics2D g2d, int i) {
+        if (i == 0) {
+            g2d.setColor(Color.orange);
+        } else {
+            g2d.setColor(Color.darkGray);
+        }
+    }
+
+    private void fillThing(Graphics2D g2d, Thing actThing, int actBinX, int actBinY) {
+        g2d.fillRect(actBinX * (size + 10) + 10,
+                actBinY * (size + 10), size, (int) (size * actThing.getWeight()));
     }
 
     private void paintBins(Graphics2D g2d) {
@@ -88,26 +114,34 @@ public class Board extends JPanel implements ActionListener {
 
     private void paintBin(Graphics2D g2d, int actBinX, int actBinY) {
         g2d.setStroke(new BasicStroke(4));
-        g2d.drawRect(actBinX * (binSize + 10) + 10,
-                actBinY * (binSize + 10) , binSize, binSize);
+        g2d.drawRect(actBinX * (size + 10) + 10,
+                actBinY * (size + 10), size, size);
     }
 
     private void fillBin(Graphics2D g2d, Bin actBin, int actBinX, int actBinY) {
-        g2d.fillRect(actBinX * (binSize + 10) + 10,
-                actBinY * (binSize + 10) , binSize, binSize);
+        g2d.fillRect(actBinX * (size + 10) + 10,
+                actBinY * (size + 10), size, size);
 
         g2d.setColor(Color.darkGray);
-        g2d.fillRect(actBinX * (binSize + 10) + 10,
-                actBinY * (binSize + 10) , binSize, (int)(binSize * actBin.getWeight()));
+        g2d.fillRect(actBinX * (size + 10) + 10,
+                actBinY * (size + 10), size, (int) (size * actBin.getWeight()));
     }
 
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (depo.runLastBinAlgorithmOneStep()) {
-            drawBoard();
-        } else {
+        if (!isInstantlyPaint) {
+            if (depo.runLastBinAlgorithmOneStep()) {
+                drawBoard();
+            } else {
+                timer.stop();
+            }
+            repaint();
+        }else{
+            while (depo.runLastBinAlgorithmOneStep()) {
+                drawBoard();
+            }
             timer.stop();
+            repaint();
         }
-        repaint();
     }
 }

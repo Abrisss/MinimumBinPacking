@@ -16,7 +16,7 @@ public class MainFrame extends JFrame {
     public MainFrame(Depository depo, ThingsReader thingsReader) {
         setTitle("Minimum Bin Packing");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(1000, 650);
+        setSize(1366, 700);
         setLocationRelativeTo(null);
 
         container = new JPanel();
